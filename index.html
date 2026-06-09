@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PopScene</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <nav class="topbar" aria-label="Primary">
+        <a class="brand" href="#" aria-label="PopScene home">
+          <span class="brand-mark">P</span>
+          <span>PopScene</span>
+        </a>
+        <div class="nav-links" aria-label="Sections">
+          <button class="nav-link is-active" type="button">Tonight</button>
+          <button class="nav-link" type="button">Live Rooms</button>
+          <button class="nav-link" type="button">Drops</button>
+          <button class="nav-link" type="button">My Queue</button>
+        </div>
+        <div class="search-wrap">
+          <span aria-hidden="true">/</span>
+          <input id="searchInput" type="search" placeholder="Search scenes, moods, casts" aria-label="Search PopScene">
+        </div>
+      </nav>
+
+      <section class="hero" aria-label="Featured scene">
+        <img class="hero-image" src="assets/popscene-hero.png" alt="Cinematic neon city with floating screens">
+        <div class="hero-scrim"></div>
+        <div class="hero-content">
+          <p class="eyebrow">Interactive premiere</p>
+          <h1>PopScene</h1>
+          <p class="tagline">Streaming that reacts to your mood, your friends, and the exact kind of chaos you want tonight.</p>
+          <div class="hero-actions">
+            <button class="primary-action" id="startParty" type="button">
+              <span aria-hidden="true">&gt;</span>
+              Start Watch Party
+            </button>
+            <button class="secondary-action" id="shufflePick" type="button">
+              <span aria-hidden="true">R</span>
+              Shuffle Scene
+            </button>
+          </div>
+          <div class="stats-row" aria-label="PopScene activity">
+            <div><strong id="roomCount">42K</strong><span>rooms live</span></div>
+            <div><strong id="pulseScore">87</strong><span>vibe pulse</span></div>
+            <div><strong id="queueCount">0</strong><span>queued</span></div>
+          </div>
+        </div>
+
+        <aside class="scene-panel" aria-label="Current scene controls">
+          <div class="panel-header">
+            <span>Now Previewing</span>
+            <span id="currentGenre">Sci-fi</span>
+          </div>
+          <h2 id="currentTitle">Neon Afterparty</h2>
+          <p id="currentMeta">Electric sci-fi mystery | 98 min | 4.8 pulse</p>
+          <div class="meter" aria-label="Audience energy">
+            <span id="meterBar"></span>
+          </div>
+          <div class="reaction-grid" aria-label="Mood reactions">
+            <button type="button" data-reaction="Hype">Hype</button>
+            <button type="button" data-reaction="Chill">Chill</button>
+            <button type="button" data-reaction="Chaos">Chaos</button>
+          </div>
+        </aside>
+      </section>
+
+      <section class="controls-band" aria-label="Browse controls">
+        <div class="tabs" id="moodTabs" role="tablist" aria-label="Mood filters">
+          <button class="tab is-active" type="button" data-mood="All">All</button>
+          <button class="tab" type="button" data-mood="Pulse">Pulse</button>
+          <button class="tab" type="button" data-mood="Laugh">Laugh</button>
+          <button class="tab" type="button" data-mood="Wonder">Wonder</button>
+          <button class="tab" type="button" data-mood="Edge">Edge</button>
+          <button class="tab" type="button" data-mood="Spider">Spider</button>
+        </div>
+        <label class="toggle">
+          <input id="liveOnly" type="checkbox">
+          <span>Live only</span>
+        </label>
+      </section>
+
+      <section class="player-band" aria-label="Embedded PopScene player">
+        <div class="player-copy">
+          <p class="eyebrow">Legal trailer player</p>
+          <h2 id="playerTitle">Spider-Man: No Way Home</h2>
+          <p id="playerMeta">Official trailer embed | Sony Pictures</p>
+        </div>
+        <div class="player-frame">
+          <iframe
+            id="trailerPlayer"
+            title="PopScene trailer player"
+            src="https://www.youtube.com/embed/JfVOs4VSpmA"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+      </section>
+
+      <section class="movie-stream" aria-label="Local movie stream">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Local HLS stream</p>
+            <h2>Michael.2026</h2>
+          </div>
+          <span class="stream-pill">1262 chunks</span>
+        </div>
+        <div class="movie-player-shell">
+          <video id="moviePlayer" class="movie-player" controls preload="metadata" playsinline></video>
+          <div class="movie-fx" id="movieFx" aria-hidden="true">
+            <span class="fx-scan"></span>
+            <span class="fx-glow fx-glow-a"></span>
+            <span class="fx-glow fx-glow-b"></span>
+          </div>
+          <button class="cinema-gate" id="cinemaGate" type="button" aria-label="Enter Michael.2026">
+            <span>PopScene Presents</span>
+            <strong>Michael.2026</strong>
+            <em>Enter the movie</em>
+          </button>
+          <div class="movie-status" id="movieStatus">Preparing local HLS player...</div>
+        </div>
+        <div class="cinema-controls" aria-label="Movie dramatic effects">
+          <button type="button" data-cinema-effect="focus">Focus</button>
+          <button type="button" data-cinema-effect="pulse">Pulse</button>
+          <button type="button" data-cinema-effect="midnight">Midnight</button>
+        </div>
+      </section>
+
+      <section class="study-mode" aria-label="Spider-Verse educational context">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Spider-Verse study mode</p>
+            <h2>Context added as research, links, and UI inspiration</h2>
+          </div>
+          <a class="text-link" href="https://www.sonypictures.com/movies/spidermanacrossthespiderverse" target="_blank" rel="noreferrer">Official page</a>
+        </div>
+        <div class="study-grid">
+          <article class="study-card">
+            <span>01</span>
+            <h3>Movie Metadata</h3>
+            <p>The pasted context centers on Spider-Man: Across the Spider-Verse, Miles Morales, the Spider Society, and the multiverse conflict.</p>
+            <a href="https://www.sonypictures.com/movies/spidermanacrossthespiderverse" target="_blank" rel="noreferrer">Read Sony synopsis</a>
+          </article>
+          <article class="study-card">
+            <span>02</span>
+            <h3>Trailer Clips</h3>
+            <p>The original page used a clips modal. PopScene keeps that idea with official trailer embeds instead of third-party stream players.</p>
+            <a href="https://www.youtube.com/results?search_query=Spider-Man+Across+the+Spider-Verse+official+trailer+Sony+Pictures" target="_blank" rel="noreferrer">Find official trailers</a>
+          </article>
+          <article class="study-card">
+            <span>03</span>
+            <h3>Interface Patterns</h3>
+            <p>The source layout inspired PopScene's poster cards, watch list action, preview player, search, mobile-first navigation, and community energy.</p>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe" target="_blank" rel="noreferrer">Learn iframe embeds</a>
+          </article>
+          <article class="study-card">
+            <span>04</span>
+            <h3>Legal Viewing</h3>
+            <p>For full movies, PopScene points users toward official storefronts and studio pages rather than unlicensed streaming mirrors.</p>
+            <a href="https://www.sonypictures.com/movies/spidermanacrossthespiderverse" target="_blank" rel="noreferrer">See buy/rent options</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="legal-watch" aria-label="Legal full movie options">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Full movie path</p>
+            <h2>Watch Spider-Verse through official storefronts</h2>
+          </div>
+        </div>
+        <div class="watch-links">
+          <a href="https://www.sonypictures.com/movies/spidermanacrossthespiderverse" target="_blank" rel="noreferrer">
+            <strong>Sony Pictures</strong>
+            <span>Official movie page</span>
+          </a>
+          <a href="https://tv.apple.com/" target="_blank" rel="noreferrer">
+            <strong>Apple TV</strong>
+            <span>Rent or buy</span>
+          </a>
+          <a href="https://www.amazon.com/Prime-Video/" target="_blank" rel="noreferrer">
+            <strong>Prime Video</strong>
+            <span>Rent or buy</span>
+          </a>
+          <a href="https://www.youtube.com/movies" target="_blank" rel="noreferrer">
+            <strong>YouTube Movies</strong>
+            <span>Rent or buy</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="content-grid" aria-label="PopScene catalog">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Scene stream</p>
+            <h2>Pick a world, bend the night</h2>
+          </div>
+          <span id="resultCount"></span>
+        </div>
+        <div class="poster-grid" id="posterGrid"></div>
+      </section>
+
+      <section class="watch-panel" aria-label="Watch party builder">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Your party mix</p>
+            <h2>Build a queue that changes with the room</h2>
+          </div>
+          <button class="secondary-action compact" id="clearQueue" type="button">Clear</button>
+        </div>
+        <div class="queue-track" id="queueTrack">
+          <p class="empty-copy">Add scenes to build tonight's PopScene queue.</p>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

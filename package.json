@@ -1,0 +1,9 @@
+{
+  "name": "popscene",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive PopScene streaming-style web app with local HLS playback.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
