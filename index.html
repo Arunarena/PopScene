@@ -96,6 +96,35 @@
         </div>
       </section>
 
+      <section class="licensed-player" aria-label="Licensed movie player">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Licensed source player</p>
+            <h2>Play a direct movie source</h2>
+          </div>
+          <button class="secondary-action compact" id="loadLocalMovie" type="button">Use Local Michael</button>
+        </div>
+        <div class="licensed-layout">
+          <div class="licensed-controls">
+            <label for="licensedSource">Direct playable URL</label>
+            <div class="source-row">
+              <input id="licensedSource" type="url" placeholder="https://your-cdn.example/movie/master.m3u8">
+              <button class="primary-action compact" id="loadLicensedSource" type="button">Load</button>
+            </div>
+            <p>Supports HLS playlists, MP4, and WebM files that you own, licensed, or host privately.</p>
+            <div class="source-presets" aria-label="Source examples">
+              <button type="button" data-source-preset="hls">HLS</button>
+              <button type="button" data-source-preset="mp4">MP4</button>
+              <button type="button" data-source-preset="webm">WebM</button>
+            </div>
+          </div>
+          <div class="licensed-frame">
+            <video id="licensedPlayer" controls preload="metadata" playsinline></video>
+            <div class="licensed-status" id="licensedStatus">Paste a licensed direct video link, then press Load.</div>
+          </div>
+        </div>
+      </section>
+
       <section class="player-band" aria-label="Embedded PopScene player">
         <div class="player-copy">
           <p class="eyebrow">Legal trailer player</p>

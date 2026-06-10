@@ -158,6 +158,11 @@ const roomCount = document.querySelector("#roomCount");
 const trailerPlayer = document.querySelector("#trailerPlayer");
 const playerTitle = document.querySelector("#playerTitle");
 const playerMeta = document.querySelector("#playerMeta");
+const licensedPlayer = document.querySelector("#licensedPlayer");
+const licensedSource = document.querySelector("#licensedSource");
+const licensedStatus = document.querySelector("#licensedStatus");
+const loadLicensedSource = document.querySelector("#loadLicensedSource");
+const loadLocalMovie = document.querySelector("#loadLocalMovie");
 const moviePlayer = document.querySelector("#moviePlayer");
 const movieStatus = document.querySelector("#movieStatus");
 const movieShell = document.querySelector(".movie-player-shell");
@@ -179,6 +184,7 @@ const nxshaFallback = [
 let activeMood = "All";
 let queuedScenes = [];
 let toastTimer;
+let licensedHls;
 
 function filteredScenes() {
   const query = searchInput.value.trim().toLowerCase();
@@ -297,6 +303,87 @@ function loadTrailer(scene) {
   trailerPlayer.src = `https://www.youtube.com/embed/${scene.trailerId}`;
   playerTitle.textContent = scene.title;
   playerMeta.textContent = scene.meta;
+}
+
+function getSourceType(url) {
+  const cleanUrl = url.split("?")[0].toLowerCase();
+  if (cleanUrl.endsWith(".m3u8")) return "hls";
+  if (cleanUrl.endsWith(".mp4")) return "mp4";
+  if (cleanUrl.endsWith(".webm")) return "webm";
+  if (cleanUrl.endsWith(".ogg") || cleanUrl.endsWith(".ogv")) return "ogg";
+  return "unknown";
+}
+
+function setLicensedStatus(message) {
+  if (licensedStatus) licensedStatus.textContent = message;
+}
+
+function clearLicensedHls() {
+  if (licensedHls) {
+    licensedHls.destroy();
+    licensedHls = null;
+  }
+}
+
+function loadLicensedPlayer(sourceUrl, label = "licensed source") {
+  if (!licensedPlayer || !sourceUrl) return;
+
+  const trimmedUrl = sourceUrl.trim();
+  const type = getSourceType(trimmedUrl);
+  clearLicensedHls();
+  licensedPlayer.pause();
+  licensedPlayer.removeAttribute("src");
+  licensedPlayer.load();
+
+  if (type === "hls") {
+    if (licensedPlayer.canPlayType("application/vnd.apple.mpegurl")) {
+      licensedPlayer.src = trimmedUrl;
+      setLicensedStatus(`Loaded ${label} with native HLS support.`);
+      showToast("Licensed HLS source loaded.");
+      return;
+    }
+
+    if (window.Hls && window.Hls.isSupported()) {
+      licensedHls = new window.Hls({
+        maxBufferLength: 50,
+        backBufferLength: 75
+      });
+      licensedHls.loadSource(trimmedUrl);
+      licensedHls.attachMedia(licensedPlayer);
+      licensedHls.on(window.Hls.Events.MANIFEST_PARSED, () => {
+        setLicensedStatus(`Loaded ${label}. Press play to start.`);
+        showToast("Licensed HLS source loaded.");
+      });
+      licensedHls.on(window.Hls.Events.ERROR, (event, data) => {
+        if (data.fatal) {
+          setLicensedStatus("The HLS source could not be loaded. Check the URL, CORS, and playlist permissions.");
+        }
+      });
+      return;
+    }
+
+    setLicensedStatus("This browser does not support HLS playback.");
+    return;
+  }
+
+  if (["mp4", "webm", "ogg"].includes(type)) {
+    licensedPlayer.src = trimmedUrl;
+    licensedPlayer.load();
+    setLicensedStatus(`Loaded ${label}. Press play to start.`);
+    showToast("Licensed video source loaded.");
+    return;
+  }
+
+  setLicensedStatus("Use a direct .m3u8, .mp4, .webm, or .ogg video file URL.");
+}
+
+function loadSourceFromQuery() {
+  if (!licensedSource) return;
+  const params = new URLSearchParams(window.location.search);
+  const source = params.get("source");
+  if (!source) return;
+  licensedSource.value = source;
+  loadLicensedPlayer(source, "URL source");
 }
 
 function initLocalMoviePlayer() {
@@ -419,6 +506,39 @@ startParty.addEventListener("click", () => {
   showToast(queuedScenes.length ? "Watch party launched with your queue." : "Watch party launched with the current preview.");
 });
 
+if (loadLicensedSource && licensedSource) {
+  loadLicensedSource.addEventListener("click", () => {
+    loadLicensedPlayer(licensedSource.value, "typed source");
+  });
+
+  licensedSource.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      loadLicensedPlayer(licensedSource.value, "typed source");
+    }
+  });
+}
+
+if (loadLocalMovie && licensedSource) {
+  loadLocalMovie.addEventListener("click", () => {
+    licensedSource.value = localMovieSource;
+    loadLicensedPlayer(localMovieSource, "local Michael.2026");
+  });
+}
+
+document.querySelectorAll("[data-source-preset]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const type = button.dataset.sourcePreset;
+    const examples = {
+      hls: "https://your-cdn.example/movie/master.m3u8",
+      mp4: "https://your-cdn.example/movie/movie.mp4",
+      webm: "https://your-cdn.example/movie/movie.webm"
+    };
+    licensedSource.value = examples[type] || "";
+    licensedSource.focus();
+    setLicensedStatus(`Example ${type.toUpperCase()} shape added. Replace it with your licensed file URL.`);
+  });
+});
+
 document.querySelectorAll("[data-reaction]").forEach((button) => {
   button.addEventListener("click", () => {
     const bump = button.dataset.reaction === "Chaos" ? 9 : button.dataset.reaction === "Hype" ? 6 : 3;
@@ -455,4 +575,5 @@ if (moviePlayer) {
 renderScenes();
 renderQueue();
 initLocalMoviePlayer();
+loadSourceFromQuery();
 loadNxshaFeed();
