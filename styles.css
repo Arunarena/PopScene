@@ -331,6 +331,7 @@ h1 {
 }
 
 .controls-band,
+.nxsha-feed,
 .player-band,
 .movie-stream,
 .study-mode,
@@ -365,6 +366,59 @@ h1 {
   width: 18px;
   height: 18px;
   accent-color: var(--teal);
+}
+
+.nxsha-feed {
+  padding-block: 16px 4px;
+}
+
+.feed-note {
+  max-width: 720px;
+  margin-bottom: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.nxsha-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.nxsha-card {
+  min-height: 132px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 209, 102, 0.1), rgba(39, 225, 193, 0.07)),
+    rgba(255, 255, 255, 0.06);
+  padding: 14px;
+}
+
+.nxsha-card strong,
+.nxsha-card span {
+  display: block;
+}
+
+.nxsha-card strong {
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.nxsha-card span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.nxsha-rating {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  border-radius: 999px;
+  background: rgba(255, 209, 102, 0.16);
+  color: var(--gold);
+  padding: 0 10px;
+  font-weight: 800;
 }
 
 .player-band {
@@ -931,6 +985,7 @@ h1 {
   }
 
   .controls-band,
+  .nxsha-feed,
   .player-band,
   .section-heading {
     align-items: flex-start;

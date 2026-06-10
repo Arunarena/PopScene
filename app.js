@@ -141,6 +141,7 @@ const resultCount = document.querySelector("#resultCount");
 const searchInput = document.querySelector("#searchInput");
 const liveOnly = document.querySelector("#liveOnly");
 const moodTabs = document.querySelector("#moodTabs");
+const nxshaGrid = document.querySelector("#nxshaGrid");
 const queueTrack = document.querySelector("#queueTrack");
 const queueCount = document.querySelector("#queueCount");
 const clearQueue = document.querySelector("#clearQueue");
@@ -163,6 +164,17 @@ const movieShell = document.querySelector(".movie-player-shell");
 const cinemaGate = document.querySelector("#cinemaGate");
 const cinemaEffectButtons = document.querySelectorAll("[data-cinema-effect]");
 const localMovieSource = "media/michael-2026/master.m3u8";
+const nxshaEndpoint = "https://web.nxsha.app/browse/movies?_rsc=tXyZJ52UQVBCVsD3";
+const nxshaFallback = [
+  { rating: "7.9", title: "Obsession", date: "May 13, 2026" },
+  { rating: "6.2", title: "Peddi", date: "Jun 3, 2026" },
+  { rating: "5.5", title: "Hai Jawani Toh Ishq Hona Hai", date: "Jun 4, 2026" },
+  { rating: "6.8", title: "The Mandalorian and Grogu", date: "May 20, 2026" },
+  { rating: "7.4", title: "Masters of the Universe", date: "Jun 3, 2026" },
+  { rating: "8.1", title: "Lee Cronin's The Mummy", date: "Apr 15, 2026" },
+  { rating: "8.2", title: "The Super Mario Galaxy Movie", date: "Apr 1, 2026" },
+  { rating: "8.4", title: "Michael", date: "Apr 22, 2026" }
+];
 
 let activeMood = "All";
 let queuedScenes = [];
@@ -176,6 +188,66 @@ function filteredScenes() {
     const searchable = `${scene.title} ${scene.genre} ${scene.mood} ${scene.blurb}`.toLowerCase();
     return matchesMood && matchesLive && searchable.includes(query);
   });
+}
+
+function parseNxshaMovies(sourceText) {
+  const clean = sourceText.replace(/\s+/g, " ");
+  const matches = [...clean.matchAll(/\b(\d\.\d)\s+(.+?)\s+([A-Z][a-z]{2}\s+\d{1,2},\s+202\d)/g)];
+  return matches
+    .map((match) => ({
+      rating: match[1],
+      title: match[2].trim().replace(/^Load more\s+/, ""),
+      date: match[3]
+    }))
+    .filter((item) => item.title.length > 1)
+    .slice(0, 8);
+}
+
+function renderNxshaFeed(items, sourceLabel = "fallback") {
+  if (!nxshaGrid) return;
+  nxshaGrid.innerHTML = "";
+
+  items.forEach((item) => {
+    const card = document.createElement("article");
+    const rating = document.createElement("span");
+    const title = document.createElement("strong");
+    const date = document.createElement("span");
+
+    card.className = "nxsha-card";
+    rating.className = "nxsha-rating";
+    rating.textContent = item.rating;
+    title.textContent = item.title;
+    date.textContent = item.date;
+
+    card.append(rating, title, date);
+    nxshaGrid.append(card);
+  });
+
+  if (sourceLabel === "live") {
+    showToast("Nxsha trend metadata refreshed.");
+  }
+}
+
+async function loadNxshaFeed() {
+  renderNxshaFeed(nxshaFallback);
+
+  try {
+    const response = await fetch(nxshaEndpoint, {
+      headers: {
+        "Accept": "text/html, text/plain"
+      }
+    });
+    if (!response.ok) throw new Error(`Nxsha responded ${response.status}`);
+    const text = await response.text();
+    const parsed = parseNxshaMovies(text);
+    if (parsed.length) {
+      renderNxshaFeed(parsed, "live");
+    }
+  } catch (error) {
+    if (nxshaGrid) {
+      nxshaGrid.dataset.source = "snapshot";
+    }
+  }
 }
 
 function renderScenes() {
@@ -383,3 +455,4 @@ if (moviePlayer) {
 renderScenes();
 renderQueue();
 initLocalMoviePlayer();
+loadNxshaFeed();
