@@ -333,6 +333,7 @@ h1 {
 .controls-band,
 .nxsha-feed,
 .licensed-player,
+.api-player,
 .player-band,
 .movie-stream,
 .study-mode,
@@ -426,7 +427,8 @@ h1 {
   padding-block: 12px 4px;
 }
 
-.licensed-layout {
+.licensed-layout,
+.api-player-layout {
   display: grid;
   grid-template-columns: minmax(260px, 0.72fr) minmax(340px, 1.28fr);
   gap: 16px;
@@ -434,7 +436,9 @@ h1 {
 }
 
 .licensed-controls,
-.licensed-frame {
+.licensed-frame,
+.api-player-controls,
+.api-player-frame {
   border: 1px solid var(--line);
   border-radius: 8px;
   background:
@@ -450,7 +454,20 @@ h1 {
   padding: 18px;
 }
 
-.licensed-controls label {
+.api-player {
+  padding-block: 12px 4px;
+}
+
+.api-player-controls {
+  display: flex;
+  min-height: 230px;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px;
+}
+
+.licensed-controls label,
+.api-player-controls label {
   margin-bottom: 8px;
   color: var(--ink);
   font-weight: 800;
@@ -476,7 +493,8 @@ h1 {
   border-color: rgba(39, 225, 193, 0.74);
 }
 
-.licensed-controls p {
+.licensed-controls p,
+.api-player-controls p {
   margin: 12px 0;
   color: var(--muted);
   font-size: 0.92rem;
@@ -499,17 +517,20 @@ h1 {
   font-weight: 800;
 }
 
-.licensed-frame {
+.licensed-frame,
+.api-player-frame {
   position: relative;
   overflow: hidden;
   background: #030407;
   box-shadow: var(--shadow);
 }
 
-.licensed-frame video {
+.licensed-frame video,
+.api-player-frame iframe {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
+  border: 0;
   background: #030407;
 }
 
@@ -1092,6 +1113,7 @@ h1 {
   .controls-band,
   .nxsha-feed,
   .licensed-layout,
+  .api-player-layout,
   .player-band,
   .section-heading {
     align-items: flex-start;
@@ -1099,12 +1121,15 @@ h1 {
   }
 
   .licensed-layout,
+  .api-player-layout,
   .player-band {
     display: flex;
   }
 
   .licensed-controls,
   .licensed-frame,
+  .api-player-controls,
+  .api-player-frame,
   .player-copy,
   .player-frame {
     width: 100%;

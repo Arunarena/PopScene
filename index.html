@@ -125,6 +125,35 @@
         </div>
       </section>
 
+      <section class="api-player" aria-label="External API player">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">API embed player</p>
+            <h2>Load a legal player endpoint</h2>
+          </div>
+          <a class="text-link" href="https://web.nxsha.app/browse/movies?_rsc=tXyZJ52UQVBCVsD3" target="_blank" rel="noreferrer">Nxsha browse</a>
+        </div>
+        <div class="api-player-layout">
+          <div class="api-player-controls">
+            <label for="apiPlayerUrl">Player or embed URL</label>
+            <div class="source-row">
+              <input id="apiPlayerUrl" type="url" placeholder="https://provider.example/embed/movie-id">
+              <button class="primary-action compact" id="loadApiPlayer" type="button">Embed</button>
+            </div>
+            <p>Use a documented embed/player endpoint from a source you are allowed to display.</p>
+          </div>
+          <div class="api-player-frame">
+            <iframe
+              id="apiPlayerFrame"
+              title="External PopScene API player"
+              sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+              allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+              allowfullscreen></iframe>
+            <div class="licensed-status" id="apiPlayerStatus">Paste a legal player endpoint, then press Embed.</div>
+          </div>
+        </div>
+      </section>
+
       <section class="player-band" aria-label="Embedded PopScene player">
         <div class="player-copy">
           <p class="eyebrow">Legal trailer player</p>

@@ -163,6 +163,10 @@ const licensedSource = document.querySelector("#licensedSource");
 const licensedStatus = document.querySelector("#licensedStatus");
 const loadLicensedSource = document.querySelector("#loadLicensedSource");
 const loadLocalMovie = document.querySelector("#loadLocalMovie");
+const apiPlayerUrl = document.querySelector("#apiPlayerUrl");
+const apiPlayerFrame = document.querySelector("#apiPlayerFrame");
+const apiPlayerStatus = document.querySelector("#apiPlayerStatus");
+const loadApiPlayer = document.querySelector("#loadApiPlayer");
 const moviePlayer = document.querySelector("#moviePlayer");
 const movieStatus = document.querySelector("#movieStatus");
 const movieShell = document.querySelector(".movie-player-shell");
@@ -318,6 +322,19 @@ function setLicensedStatus(message) {
   if (licensedStatus) licensedStatus.textContent = message;
 }
 
+function setApiPlayerStatus(message) {
+  if (apiPlayerStatus) apiPlayerStatus.textContent = message;
+}
+
+function isHttpUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch (error) {
+    return false;
+  }
+}
+
 function clearLicensedHls() {
   if (licensedHls) {
     licensedHls.destroy();
@@ -384,6 +401,29 @@ function loadSourceFromQuery() {
   if (!source) return;
   licensedSource.value = source;
   loadLicensedPlayer(source, "URL source");
+}
+
+function loadApiEmbed(embedUrl, label = "API player") {
+  if (!apiPlayerFrame || !embedUrl) return;
+
+  const trimmedUrl = embedUrl.trim();
+  if (!isHttpUrl(trimmedUrl)) {
+    setApiPlayerStatus("Use a full http or https player endpoint.");
+    return;
+  }
+
+  apiPlayerFrame.src = trimmedUrl;
+  setApiPlayerStatus(`${label} loaded. If the frame stays blank, the provider may block embedding.`);
+  showToast("External player endpoint embedded.");
+}
+
+function loadEmbedFromQuery() {
+  if (!apiPlayerUrl) return;
+  const params = new URLSearchParams(window.location.search);
+  const embed = params.get("embed");
+  if (!embed) return;
+  apiPlayerUrl.value = embed;
+  loadApiEmbed(embed, "URL embed");
 }
 
 function initLocalMoviePlayer() {
@@ -525,6 +565,18 @@ if (loadLocalMovie && licensedSource) {
   });
 }
 
+if (loadApiPlayer && apiPlayerUrl) {
+  loadApiPlayer.addEventListener("click", () => {
+    loadApiEmbed(apiPlayerUrl.value, "typed API player");
+  });
+
+  apiPlayerUrl.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      loadApiEmbed(apiPlayerUrl.value, "typed API player");
+    }
+  });
+}
+
 document.querySelectorAll("[data-source-preset]").forEach((button) => {
   button.addEventListener("click", () => {
     const type = button.dataset.sourcePreset;
@@ -576,4 +628,5 @@ renderScenes();
 renderQueue();
 initLocalMoviePlayer();
 loadSourceFromQuery();
+loadEmbedFromQuery();
 loadNxshaFeed();
